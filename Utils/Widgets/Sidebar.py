@@ -20,14 +20,32 @@ def create_sidebar_filter(df_data):
     # --- Sidebar para filtros ---
     st.sidebar.header("Opciones de Filtrado")
 
-    # Filtro 1: Emoción/Sentimiento de la Reseña
-    selected_sentiments = st.sidebar.multiselect(
-        "Filtrar por Emoción:",
-        options=['Positivo', 'Negativo', 'Neutral'],
-        default=['Positivo', 'Negativo', 'Neutral'],
-        help="Selecciona qué tipo de emoción de reseña quieres visualizar."
-    )
+    # Filtro 1: Emoción/Sentimiento de la Reseña - Usando toggle buttons
+    st.sidebar.markdown("##### Filtrar por Emoción:")
+    
+    # Usar st.sidebar.columns para alinear los toggle buttons horizontalmente
+    col1, col2, col3 = st.sidebar.columns(3)
 
+    # st.toggle devuelve True/False. El valor por defecto es True para mostrar todo al inicio.
+    with col1:
+        toggle_positivo = st.toggle("Positivo 🟢", value=True, help="Mostrar reseñas con sentimiento Positivo.")
+    with col2:
+        toggle_neutral = st.toggle("Neutral 🟡", value=True, help="Mostrar reseñas con sentimiento Neutral.")
+    with col3:
+        toggle_negativo = st.toggle("Negativo 🔴", value=True, help="Mostrar reseñas con sentimiento Negativo.")
+
+    # Recolectar las emociones seleccionadas
+    selected_sentiments = []
+    if toggle_positivo:
+        selected_sentiments.append('Positivo')
+    if toggle_negativo:
+        selected_sentiments.append('Negativo')
+    if toggle_neutral:
+        selected_sentiments.append('Neutral')
+
+    if not selected_sentiments:
+         st.sidebar.warning("Ninguna emoción seleccionada. El mapa estará vacío.")
+        
     # Filtro 2: Calificación de Estrellas
     min_rating = st.sidebar.slider(
         "Calificación Mínima (Estrellas de Yelp):",
@@ -38,7 +56,10 @@ def create_sidebar_filter(df_data):
     )
 
     # --- Aplicar Filtros ---
+    # Aplica el filtro de emoción. Si selected_sentiments está vacío, df_filtered será vacío.
     df_filtered = df_data[df_data['sentiment'].isin(selected_sentiments)]
+    
+    # Aplica el filtro de rating al resultado.
     df_filtered = df_filtered[df_filtered['rating'] >= min_rating]
 
     # --- Botón de Descarga ---
