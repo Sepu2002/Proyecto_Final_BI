@@ -8,7 +8,7 @@ import pydeck as pdk
 # --------------------------------------------------------------------------------------
 def show_emotion_map_dashboard(df_filtered):
    
-    st.title("🗺️ Visualización 1: Mapa de Sentimiento de Reseñas en Florida")
+    st.title("🗺️ Mapa de Sentimiento de Reseñas en Florida")
     st.markdown("---")
 
     st.info(f"Mostrando {len(df_filtered)} negocios de detailing en el mapa según los filtros seleccionados.")
@@ -33,7 +33,6 @@ def show_emotion_map_dashboard(df_filtered):
 # FUNCIÓN DE CREACIÓN DEL MAPA
 # --------------------------------------------------------------------------------------
 def render_map_viz(df):
-    """Renderiza la visualización del mapa de Florida con puntos coloreados por emoción."""
 
     # 1. Definir la vista inicial del mapa (centrado en Florida)
     view_state = pdk.ViewState(
