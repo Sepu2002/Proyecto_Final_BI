@@ -61,7 +61,6 @@ def render_map_viz(df):
     r = pdk.Deck(
         layers=[scatter_layer],
         initial_view_state=view_state,
-        # *** CORRECCIÓN: Se eliminó el map_style que requería Mapbox token ***
         tooltip={
             "html": "<b>Negocio:</b> {name}<br><b>Rating:</b> {rating} estrellas<br><b>Emoción:</b> {sentiment}<br><b>Reseñas:</b> {review_count}",
             "style": {"backgroundColor": "steelblue", "color": "white"}
