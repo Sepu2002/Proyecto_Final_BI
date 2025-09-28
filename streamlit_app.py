@@ -39,6 +39,7 @@ df_filtered_businesses = create_sidebar_filter(df_data_businesses)
 show_emotion_map_dashboard(df_filtered_businesses)
 
 # 3. Word Map de Tendencias (usa df_data_reviews)
+st.markdown("---") # Separador para mejor visualización
 word_map_dashboard(df_data_reviews)
 
 # 4. Leaderboard de Ranking (usa df_filtered_businesses)
