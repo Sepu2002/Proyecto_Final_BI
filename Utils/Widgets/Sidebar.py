@@ -106,11 +106,4 @@ def create_sidebar_filter(df_data):
         help="Descarga la base de datos de negocios con los filtros de la barra lateral aplicados."
     )
     
-    # --- Control de Modo Oscuro/Claro (NUEVA SECCIÓN) ---
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("##### 🌓 Control de Tema")
-    st.sidebar.info(
-        "Para cambiar entre **Modo Claro** y **Modo Oscuro**, utiliza el menú de configuración de Streamlit (⋮) en la esquina superior derecha y selecciona 'Settings'."
-    )
-    
     return df_filtered
