@@ -9,7 +9,7 @@ from Utils.Widgets.EmotionMap import show_emotion_map_dashboard
 from Utils.Widgets.Sidebar import create_sidebar_filter
 from Utils.Widgets.Leaderboard import show_leaderboard
 from Utils.Widgets.WordMap import load_reviews_data # Importar la nueva función de carga
-from Utils.Widgets.WordMap import word_map_dashboard # Importar el nuevo dashboard
+from Utils.Widgets.WordMap import update_word_map_with_filters # Nueva función para usar filtros de sidebar
 
 # --- Configuración de la Página de Streamlit ---
 st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Automotriz", page_icon="🚗")
@@ -18,7 +18,7 @@ st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Autom
 st.title("✨ Shiny Stats: Dashboard de Inteligencia de Negocios Automotriz 🚗")
 st.markdown("""
     **Transformando el Detailing en Florida con Data Science.**
-    Análisis de sentimientos en reseñas de Yelp y Google para **identificar quejas**, 
+    Análisis de sentimientos en reseñas de Yelp para **identificar quejas**, 
     optimizar la experiencia del cliente y obtener una ventaja competitiva.
 """)
 st.markdown("---") 
@@ -28,6 +28,7 @@ st.markdown("---")
 df_data_businesses = pd.read_csv('Datasets/businesses_con_sentimiento.csv') 
 
 # Cargar los datos de reseñas (para WordMap)
+# Nota: Este DataFrame contiene TODAS las reseñas y no está filtrado.
 df_data_reviews = load_reviews_data()
 
 
@@ -38,8 +39,8 @@ df_filtered_businesses = create_sidebar_filter(df_data_businesses)
 # 2. Mostrar el dashboard del mapa de emociones (usa df_filtered_businesses)
 show_emotion_map_dashboard(df_filtered_businesses)
 
-# 3. Word Map de Tendencias (usa df_data_reviews)
-word_map_dashboard(df_data_reviews)
+# 3. Word Map de Tendencias (utiliza los negocios filtrados por la sidebar)
+update_word_map_with_filters(df_filtered_businesses, df_data_reviews)
 
 # 4. Leaderboard de Ranking (usa df_filtered_businesses)
 st.markdown("---") # Separador para mejor visualización
