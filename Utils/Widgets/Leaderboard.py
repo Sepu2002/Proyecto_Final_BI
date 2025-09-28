@@ -33,19 +33,29 @@ def calculate_ranking_score(df, sentiment_weight=0.5):
 def show_leaderboard(df_data):
     """Muestra el leaderboard de las mejores compañías de detailing con formato de podio."""
 
-    # 1. Calcular el score y ordenar
+    # 1. Calcular el score
     df_ranked = calculate_ranking_score(df_data.copy(), sentiment_weight=0.5) 
-    df_ranked = df_ranked.sort_values(by='ranking_score', ascending=False).reset_index(drop=True)
+    
+    # 2. Ordenar por ranking_score (principal) y review_count (desempate)
+    # El desempate se aplica cuando los 'ranking_score' son iguales.
+    df_ranked = df_ranked.sort_values(
+        by=['ranking_score', 'review_count'], # Ordenar por Score, luego por conteo de reseñas
+        ascending=[False, False] # Ambos deben ser descendentes (mayor es mejor)
+    ).reset_index(drop=True)
     df_ranked['Rank'] = df_ranked.index + 1
     
     st.subheader("🏆 Leaderboard de Desempeño Combinado")
-    st.markdown("Este ranking combina el **Rating de Estrellas** (desempeño histórico) y el **Score de Emoción** (desempeño reciente), ponderados al 50/50, para dar una visión holística de la calidad del servicio.")
+    st.markdown("""
+    Este ranking combina el **Rating de Estrellas** (desempeño histórico) y el **Score de Emoción** (desempeño reciente), ponderados al 50/50. 
     
-    # 2. Separar Top 3 y el resto
+    **Criterio de Desempate:** Para negocios con el mismo **Score Combinado**, se utiliza el **Total de Reseñas** para determinar la posición más alta, premiando la popularidad y el volumen de datos.
+    """)
+    
+    # 3. Separar Top 3 y el resto
     df_top3 = df_ranked.head(3)
     df_rest = df_ranked.iloc[3:]
 
-    # 3. Mostrar el Podio (Top 3)
+    # 4. Mostrar el Podio (Top 3)
     if not df_top3.empty:
         
         # Usar 3 columnas: 2do lugar | 1er lugar | 3er lugar
@@ -53,12 +63,28 @@ def show_leaderboard(df_data):
 
         # Función auxiliar para renderizar cada posición
         def render_podium_item(col, rank, df_podium, title, color_hex, emoji, height):
+            # Obtener el índice ajustado (el dataframe top3 ya está ordenado)
+            if rank == 1:
+                idx = 0
+            elif rank == 2:
+                idx = 1
+            elif rank == 3:
+                idx = 2
+            else:
+                return # No renderizar si no es top 3
+
             if rank <= len(df_podium):
-                item = df_podium.iloc[rank - 1]
+                try:
+                    item = df_podium.iloc[idx]
+                except IndexError:
+                     # Esto solo pasaría si el dataframe filtrado tuviera menos de 3 elementos
+                     return
+
                 name = item['name']
                 score = item['ranking_score']
                 rating = item['rating']
                 sentiment = item['sentiment']
+                review_count = item['review_count']
                 
                 # Diseño de la tarjeta con HTML/CSS para el podio
                 col.markdown(f"""
@@ -77,7 +103,8 @@ def show_leaderboard(df_data):
                     <h2 style="color: white; margin-bottom: 0px;">{emoji} {title}</h2>
                     <h3 style="color: white; margin-top: 5px; font-size: 1.3rem;">{name}</h3>
                     <p style="color: white; font-size: 1.2rem; font-weight: bold;">Score: {score}%</p>
-                    <p style="color: white; margin: 0;">Rating: {rating} ⭐ | {sentiment}</p>
+                    <p style="color: white; margin: 0;">Rating: {rating} ⭐ | Emoción: {sentiment}</p>
+                    <p style="color: white; margin: 0; font-size: 0.9rem;">Total Reseñas: {review_count}</p>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -104,7 +131,7 @@ def show_leaderboard(df_data):
         render_podium_item(
             col=col2, 
             rank=2, 
-            df_podium=df_top3, 
+            df_podium=df_ranked, 
             title="2º PLATA", 
             color_hex="#78706E", # Gris oscuro/Plata
             emoji="🥈", 
@@ -115,7 +142,7 @@ def show_leaderboard(df_data):
         render_podium_item(
             col=col1, 
             rank=1, 
-            df_podium=df_top3, 
+            df_podium=df_ranked, 
             title="1º ORO", 
             color_hex=" #B59410", # Dorado
             emoji="🥇", 
@@ -126,7 +153,7 @@ def show_leaderboard(df_data):
         render_podium_item(
             col=col3, 
             rank=3, 
-            df_podium=df_top3, 
+            df_podium=df_ranked, 
             title="3º BRONCE", 
             color_hex="#804A00", # Bronce/Marrón
             emoji="🥉", 
@@ -138,7 +165,7 @@ def show_leaderboard(df_data):
 
     st.markdown("---")
     
-    # 4. Mostrar el resto del ranking (del 4º lugar en adelante)
+    # 5. Mostrar el resto del ranking (del 4º lugar en adelante)
     if not df_rest.empty:
         st.subheader("Ranking Completo (Top 4 en adelante)")
         
