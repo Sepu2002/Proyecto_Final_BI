@@ -28,7 +28,7 @@ ENGLISH_STOPWORDS = set(STOPWORDS) | {
     'car', 'vehicle', 'auto', 'truck', 'my car', 'service', 'time', 
     'place', 'shop', 'job', 'they', 'get', 'got', 'day', 'work', 
     'did', 'was', 'were', 'really', 'much', 'so', 'had', 'looks',
-    'new', 'definitely', 'like', 'would', 'also', 'back', 'detailing', 'detail'
+    'new', 'definitely', 'like', 'would', 'also', 'back', 'detailing', 'detail', 'great', 'good'
 }
 
 def load_reviews_data():
