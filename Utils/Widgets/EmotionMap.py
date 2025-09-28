@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 import pydeck as pdk
 
-
+# --------------------------------------------------------------------------------------
+# FUNCIÓN DE VISUALIZACIÓN DEL MAPA
+# --------------------------------------------------------------------------------------
 def show_emotion_map_dashboard(df_filtered):
-    # --------------------------------------------------------------------------------------
-    # CUERPO PRINCIPAL DEL DASHBOARD
-    # --------------------------------------------------------------------------------------
+   
     st.title("🗺️ Visualización 1: Mapa de Sentimiento de Reseñas en Florida")
     st.markdown("---")
 
@@ -30,7 +30,7 @@ def show_emotion_map_dashboard(df_filtered):
 
 
 # --------------------------------------------------------------------------------------
-# FUNCIÓN DE VISUALIZACIÓN DEL MAPA
+# FUNCIÓN DE CREACIÓN DEL MAPA
 # --------------------------------------------------------------------------------------
 def render_map_viz(df):
     """Renderiza la visualización del mapa de Florida con puntos coloreados por emoción."""
