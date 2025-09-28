@@ -16,7 +16,7 @@ st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Autom
 st.title("✨ Shiny Stats: Dashboard de Inteligencia de Negocios Automotriz 🚗")
 st.markdown("""
     **Transformando el Detailing en Florida con Data Science.**
-    Análisis de sentimientos en reseñas de Yelp para **identificar quejas**, 
+    Análisis de sentimientos en reseñas de Yelp y Google para **identificar quejas**, 
     optimizar la experiencia del cliente y obtener una ventaja competitiva.
 """)
 st.markdown("---") 

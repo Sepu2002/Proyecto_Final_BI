@@ -14,7 +14,6 @@ import pydeck as pdk
 def show_emotion_map_dashboard(df_filtered):
    
     st.header("🗺️ Mapa de Sentimiento de Reseñas en Florida") # <-- CAMBIADO DE st.title a st.header
-    st.markdown("---")
 
     st.info(f"Mostrando {len(df_filtered)} negocios de detailing en el mapa según los filtros seleccionados.")
 
