@@ -4,3 +4,4 @@ numpy
 pydeck
 wordcloud
 matplotlib
+nltk
