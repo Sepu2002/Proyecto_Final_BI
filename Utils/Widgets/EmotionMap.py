@@ -8,21 +8,27 @@ import pydeck as pdk
 # --------------------------------------------------------------------------------------
 def show_emotion_map_dashboard(df_filtered):
    
-    st.header("🗺️ Mapa de Sentimiento de Reseñas en Florida") # <-- CAMBIADO DE st.title a st.header
+    st.subheader("🗺️ Mapa de Sentimiento de Reseñas en Florida")
 
-    st.info(f"Mostrando {len(df_filtered)} negocios de detailing en el mapa según los filtros seleccionados.")
+    # Filtramos los datos que tengan coordenadas válidas
+    df_valid = df_filtered.dropna(subset=['latitude', 'longitude'])
+
+    st.info(f"Mostrando **{len(df_valid)}** negocios de detailing en el mapa (de {len(df_filtered)} filtrados).")
 
     # --- Renderizar el Mapa ---
-    render_map_viz(df_filtered)
+    if not df_valid.empty:
+        render_map_viz(df_valid)
+    else:
+        st.warning("No hay negocios con coordenadas válidas para mostrar en el mapa.")
 
     # --- Leyenda del Mapa ---
     st.markdown("""
     <div style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 20px;">
-        <strong>Leyenda de Emociones:</strong>
+        <strong>Leyenda de Emociones (Sentimiento Dominante):</strong>
         <ul>
-            <li><span style="color: green; font-weight: bold;">■ POSITIVO:</span> Alta satisfacción del cliente (Oportunidad para aprender y replicar el éxito).</li>
-            <li><span style="color: red; font-weight: bold;">■ NEGATIVO:</span> Baja satisfacción del cliente (Área de oportunidad inmediata / Focos rojos).</li>
-            <li><span style="color: orange; font-weight: bold;">■ NEUTRAL:</span> Reseñas ambiguas o promedio (Potencial para mejorar fácilmente).</li>
+            <li><span style="color: green; font-weight: bold;">■ POSITIVO:</span> Sentimiento general positivo en las reseñas.</li>
+            <li><span style="color: red; font-weight: bold;">■ NEGATIVO:</span> Sentimiento general negativo en las reseñas (Foco Rojo).</li>
+            <li><span style="color: orange; font-weight: bold;">■ NEUTRAL:</span> Sentimiento mixto o falta de predominancia (Oportunidad).</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -32,23 +38,26 @@ def show_emotion_map_dashboard(df_filtered):
 # --------------------------------------------------------------------------------------
 def render_map_viz(df):
 
-    # 1. Definir la vista inicial del mapa (centrado en Florida)
+    # Calcular el centro del mapa dinámicamente
+    avg_lat = df['latitude'].mean()
+    avg_lon = df['longitude'].mean()
+
+    # 1. Definir la vista inicial del mapa (centrado en los datos)
     view_state = pdk.ViewState(
-        latitude=28.5,
-        longitude=-81.5,
-        zoom=6,
+        latitude=avg_lat,
+        longitude=avg_lon,
+        zoom=7,  # Un poco más de zoom para Florida
         pitch=40,
     )
 
     # 2. Definir la capa de Scatterplot
-    # Usa la columna 'color' que creamos en el dataframe
-    # Usa el conteo de reseñas para el radio del punto
+    # Usa la columna 'color' y el 'review_count' del negocio
     scatter_layer = pdk.Layer(
         "ScatterplotLayer",
         df,
-        get_position=["lon", "lat"],
+        get_position=["longitude", "latitude"], # Asegurar el orden lon, lat
         auto_highlight=True,
-        get_fill_color="color",  # Usa la columna 'color' (RGB) para el color de relleno
+        get_fill_color="color",  # Usa la columna 'color' (RGB)
         get_line_color=[0, 0, 0],
         get_radius="review_count / 10", # Radio basado en el volumen de reseñas
         radius_scale=2,
@@ -62,8 +71,8 @@ def render_map_viz(df):
         layers=[scatter_layer],
         initial_view_state=view_state,
         tooltip={
-            "html": "<b>Negocio:</b> {name}<br><b>Rating:</b> {rating} estrellas<br><b>Emoción:</b> {sentiment}<br><b>Reseñas:</b> {review_count}",
-            "style": {"backgroundColor": "steelblue", "color": "white"}
+            "html": "<b>Negocio:</b> {name}<br><b>Rating Histórico:</b> {rating} estrellas<br><b>Sentimiento Dominante:</b> {dominant_sentiment}<br><b>Reseñas Totales:</b> {review_count}",
+            "style": {"backgroundColor": "#1E90FF", "color": "white"}
         }
     )
 

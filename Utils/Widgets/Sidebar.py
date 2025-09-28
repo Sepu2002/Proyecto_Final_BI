@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pydeck as pdk  
 
 # Helper function to convert DataFrame to CSV for download
 # La columna 'color' es para visualización y se elimina para una descarga limpia.
@@ -15,7 +14,7 @@ def convert_df_to_csv(df):
     # Convierte el DataFrame a una cadena CSV codificada en UTF-8
     return df_download.to_csv(index=False).encode('utf-8')
 
-# Inicializador de estado de la sesión (se sigue usando para que los toggles mantengan su estado)
+# Inicializador de estado de la sesión
 def _initialize_sentiment_state():
     """Inicializa el estado de la sesión para los filtros de sentimiento."""
     if 'selected_positivo' not in st.session_state:
@@ -35,33 +34,32 @@ def create_sidebar_filter(df_data):
     st.sidebar.header("Opciones de Filtrado")
 
     # Filtro 1: Emoción/Sentimiento de la Reseña - Usando toggles verticales
-    st.sidebar.markdown("##### Filtrar por Emoción:")
+    st.sidebar.markdown("##### Filtrar por Sentimiento Dominante (ML):")
     
-    # Usamos st.toggle que se comporta como un botón selector nativo de Streamlit
-    # y lo almacenamos en st.session_state para que mantenga su estado.
+    # Usamos st.toggle y lo almacenamos en st.session_state
     
     # Botón Positivo
     st.session_state['selected_positivo'] = st.sidebar.toggle(
         "Positivo 🟢", 
         value=st.session_state['selected_positivo'], 
-        key="toggle_positivo",
-        help="Mostrar reseñas con sentimiento Positivo (Éxito)."
+        key="toggle_positivo_final",
+        help="Mostrar negocios donde el ML detectó un Sentimiento Dominante Positivo."
     )
     
     # Botón Neutral
     st.session_state['selected_neutral'] = st.sidebar.toggle(
         "Neutral 🟡", 
         value=st.session_state['selected_neutral'], 
-        key="toggle_neutral",
-        help="Mostrar reseñas con sentimiento Neutral (Oportunidad)."
+        key="toggle_neutral_final",
+        help="Mostrar negocios con Sentimiento Dominante Neutral o Mixto."
     )
 
     # Botón Negativo
     st.session_state['selected_negativo'] = st.sidebar.toggle(
         "Negativo 🔴", 
         value=st.session_state['selected_negativo'], 
-        key="toggle_negativo",
-        help="Mostrar reseñas con sentimiento Negativo (Foco Rojo)."
+        key="toggle_negativo_final",
+        help="Mostrar negocios donde el ML detectó un Sentimiento Dominante Negativo."
     )
 
     # --- Recolectar las emociones seleccionadas para el filtrado ---
@@ -76,9 +74,9 @@ def create_sidebar_filter(df_data):
     if not selected_sentiments:
          st.sidebar.warning("Ninguna emoción seleccionada. El mapa estará vacío.")
         
-    # Filtro 2: Calificación de Estrellas
+    # Filtro 2: Calificación de Estrellas (Rating Histórico de Yelp)
     min_rating = st.sidebar.slider(
-        "Calificación Mínima ⭐:",
+        "Rating Histórico Mínimo ⭐:",
         min_value=1.0,
         max_value=5.0,
         value=1.0,
@@ -86,7 +84,9 @@ def create_sidebar_filter(df_data):
     )
 
     # --- Aplicar Filtros ---
-    df_filtered = df_data[df_data['sentiment'].isin(selected_sentiments)]
+    # Filtra por el Sentimiento Dominante calculado por el ML
+    df_filtered = df_data[df_data['dominant_sentiment'].isin(selected_sentiments)]
+    # Filtra por el Rating Histórico
     df_filtered = df_filtered[df_filtered['rating'] >= min_rating]
 
     # --- Botón de Descarga ---
