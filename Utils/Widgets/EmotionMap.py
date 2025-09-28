@@ -3,12 +3,17 @@ import pandas as pd
 import numpy as np
 import pydeck as pdk
 
+import streamlit as st
+import pandas as pd
+import numpy as np
+import pydeck as pdk
+
 # --------------------------------------------------------------------------------------
 # FUNCIÓN DE VISUALIZACIÓN DEL MAPA
 # --------------------------------------------------------------------------------------
 def show_emotion_map_dashboard(df_filtered):
    
-    st.title("🗺️ Mapa de Sentimiento de Reseñas en Florida")
+    st.header("🗺️ Mapa de Sentimiento de Reseñas en Florida") # <-- CAMBIADO DE st.title a st.header
     st.markdown("---")
 
     st.info(f"Mostrando {len(df_filtered)} negocios de detailing en el mapa según los filtros seleccionados.")
@@ -27,7 +32,6 @@ def show_emotion_map_dashboard(df_filtered):
         </ul>
     </div>
     """, unsafe_allow_html=True)
-
 
 # --------------------------------------------------------------------------------------
 # FUNCIÓN DE CREACIÓN DEL MAPA
