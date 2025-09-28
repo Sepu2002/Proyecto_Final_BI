@@ -117,7 +117,7 @@ def show_leaderboard(df_data):
             rank=1, 
             df_podium=df_top3, 
             title="1º ORO", 
-            color_hex="#FDE8B5", # Dorado
+            color_hex=" #B59410", # Dorado
             emoji="🥇", 
             height="250px"
         )
