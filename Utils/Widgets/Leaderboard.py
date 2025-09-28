@@ -108,7 +108,7 @@ def show_leaderboard(df_data):
             title="2º PLATA", 
             color_hex="#78706E", # Gris oscuro/Plata
             emoji="🥈", 
-            height="250px"
+            height="300px"
         )
         
         # Renderizar 1er lugar (col1 - más alto y central)
@@ -119,7 +119,7 @@ def show_leaderboard(df_data):
             title="1º ORO", 
             color_hex=" #B59410", # Dorado
             emoji="🥇", 
-            height="250px"
+            height="330px"
         )
 
         # Renderizar 3er lugar (col3)
@@ -130,7 +130,7 @@ def show_leaderboard(df_data):
             title="3º BRONCE", 
             color_hex="#804A00", # Bronce/Marrón
             emoji="🥉", 
-            height="250px"
+            height="300px"
         )
     else:
         st.warning("No hay datos disponibles para mostrar el Leaderboard con los filtros aplicados.")
