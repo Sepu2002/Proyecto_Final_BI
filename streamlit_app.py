@@ -7,6 +7,7 @@ from Utils.Data.GenMockData import generate_mock_data
 from Utils.Widgets.EmotionMap import render_map_viz
 from Utils.Widgets.EmotionMap import show_emotion_map_dashboard
 from Utils.Widgets.Sidebar import create_sidebar_filter
+from Utils.Widgets.Leaderboard import show_leaderboard
 
 # --- Configuración de la Página de Streamlit ---
 st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Automotriz", page_icon="🚗")
@@ -20,3 +21,5 @@ df_filtered = create_sidebar_filter(df_data)
 # Mostrar el dashboard del mapa de emociones
 show_emotion_map_dashboard(df_filtered)
 
+st.markdown("---") # Separador para mejor visualización
+show_leaderboard(df_filtered) 
