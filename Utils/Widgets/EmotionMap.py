@@ -46,7 +46,7 @@ def render_map_viz(df):
     scatter_layer = pdk.Layer(
         "ScatterplotLayer",
         df,
-        get_position=["lon", "lat"],
+        get_position=["longitude", "latitude"],
         auto_highlight=True,
         get_fill_color="color",  # Usa la columna 'color' (RGB) para el color de relleno
         get_line_color=[0, 0, 0],
