@@ -106,7 +106,7 @@ def show_leaderboard(df_data):
             rank=2, 
             df_podium=df_top3, 
             title="2º PLATA", 
-            color_hex="#A9A9A9", # Gris oscuro/Plata
+            color_hex="#78706E", # Gris oscuro/Plata
             emoji="🥈", 
             height="250px"
         )
@@ -128,7 +128,7 @@ def show_leaderboard(df_data):
             rank=3, 
             df_podium=df_top3, 
             title="3º BRONCE", 
-            color_hex="#CD7F32", # Bronce/Marrón
+            color_hex="#804A00", # Bronce/Marrón
             emoji="🥉", 
             height="250px"
         )
