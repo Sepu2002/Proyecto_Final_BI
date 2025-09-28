@@ -119,7 +119,7 @@ def show_leaderboard(df_data):
             title="1º ORO", 
             color_hex=" #B59410", # Dorado
             emoji="🥇", 
-            height="330px"
+            height="300px"
         )
 
         # Renderizar 3er lugar (col3)
