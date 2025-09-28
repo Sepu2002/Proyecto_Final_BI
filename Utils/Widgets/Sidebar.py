@@ -15,7 +15,7 @@ def convert_df_to_csv(df):
     # Convierte el DataFrame a una cadena CSV codificada en UTF-8
     return df_download.to_csv(index=False).encode('utf-8')
 
-# Inicializador de estado de la sesión
+# Inicializador de estado de la sesión (se sigue usando para que los toggles mantengan su estado)
 def _initialize_sentiment_state():
     """Inicializa el estado de la sesión para los filtros de sentimiento."""
     if 'selected_positivo' not in st.session_state:
@@ -24,11 +24,6 @@ def _initialize_sentiment_state():
         st.session_state['selected_neutral'] = True
     if 'selected_negativo' not in st.session_state:
         st.session_state['selected_negativo'] = True
-
-# Handler para cambiar el estado al hacer click en el botón
-def _toggle_sentiment_state(key):
-    """Invierte el estado de la clave de sentimiento en st.session_state."""
-    st.session_state[key] = not st.session_state[key]
 
 
 def create_sidebar_filter(df_data):
@@ -39,103 +34,35 @@ def create_sidebar_filter(df_data):
     # --- Sidebar para filtros ---
     st.sidebar.header("Opciones de Filtrado")
 
-    # Filtro 1: Emoción/Sentimiento de la Reseña - Usando botones de selección
+    # Filtro 1: Emoción/Sentimiento de la Reseña - Usando toggles verticales
     st.sidebar.markdown("##### Filtrar por Emoción:")
     
-    col1, col2, col3 = st.sidebar.columns(3)
-
-    # --- INYECCIÓN CSS para estilizar los botones (solución Streamlit Hack) ---
-    # Esto es necesario para aplicar colores personalizados a los botones en función de su estado.
-    CSS = """
-    <style>
-        /* Estilo general para los botones de sentimiento en la barra lateral */
-        div[data-testid="stSidebar"] div.stButton > button {
-            border-radius: 8px;
-            font-weight: bold;
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            width: 100%; /* Para que llenen el ancho de la columna */
-            transition: all 0.2s; /* Transición suave al cambiar de estado */
-        }
-        
-        /* === POSITIVO Button Styles === */
-        /* Estilo para botón Positivo NO SELECCIONADO (borde verde, texto verde) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Positivo")):not(:has(div > p:contains("(ON)"))) {
-            background-color: #F5F5F5; 
-            color: #4CAF50; /* Verde */
-            border-color: #4CAF50;
-        }
-        /* Estilo para botón Positivo SELECCIONADO (relleno verde, texto blanco) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Positivo (ON)")) {
-            background-color: #4CAF50; 
-            color: white;
-            border-color: #4CAF50;
-        }
-
-        /* === NEUTRAL Button Styles === */
-        /* Estilo para botón Neutral NO SELECCIONADO (borde amarillo, texto amarillo/naranja) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Neutral")):not(:has(div > p:contains("(ON)"))) {
-            background-color: #F5F5F5; 
-            color: #FFC107; /* Amarillo/Naranja */
-            border-color: #FFC107;
-        }
-        /* Estilo para botón Neutral SELECCIONADO (relleno amarillo, texto negro) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Neutral (ON)")) {
-            background-color: #FFC107; 
-            color: black;
-            border-color: #FFC107;
-        }
-
-        /* === NEGATIVO Button Styles === */
-        /* Estilo para botón Negativo NO SELECCIONADO (borde rojo, texto rojo) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Negativo")):not(:has(div > p:contains("(ON)"))) {
-            background-color: #F5F5F5; 
-            color: #F44336; /* Rojo */
-            border-color: #F44336;
-        }
-        /* Estilo para botón Negativo SELECCIONADO (relleno rojo, texto blanco) */
-        div[data-testid="stSidebar"] div.stButton > button:has(div > p:contains("Negativo (ON)")) {
-            background-color: #F44336; 
-            color: white;
-            border-color: #F44336;
-        }
-    </style>
-    """
-    st.markdown(CSS, unsafe_allow_html=True)
-
-    # --- Positivo Button ---
-    with col1:
-        is_selected = st.session_state['selected_positivo']
-        st.button(
-            # Se añade (ON) al label para que el CSS pueda identificar el estado seleccionado
-            label=f"Positivo {'(ON)' if is_selected else ''}", 
-            key="btn_positivo",
-            on_click=_toggle_sentiment_state,
-            args=['selected_positivo'],
-            help="Activar/Desactivar el filtro de sentimiento Positivo."
-        )
+    # Usamos st.toggle que se comporta como un botón selector nativo de Streamlit
+    # y lo almacenamos en st.session_state para que mantenga su estado.
     
-    # --- Neutral Button ---
-    with col2:
-        is_selected = st.session_state['selected_neutral']
-        st.button(
-            label=f"Neutral {'(ON)' if is_selected else ''}",
-            key="btn_neutral",
-            on_click=_toggle_sentiment_state,
-            args=['selected_neutral'],
-            help="Activar/Desactivar el filtro de sentimiento Neutral."
-        )
+    # Botón Positivo
+    st.session_state['selected_positivo'] = st.sidebar.toggle(
+        "Positivo 🟢", 
+        value=st.session_state['selected_positivo'], 
+        key="toggle_positivo",
+        help="Mostrar reseñas con sentimiento Positivo (Éxito)."
+    )
+    
+    # Botón Neutral
+    st.session_state['selected_neutral'] = st.sidebar.toggle(
+        "Neutral 🟡", 
+        value=st.session_state['selected_neutral'], 
+        key="toggle_neutral",
+        help="Mostrar reseñas con sentimiento Neutral (Oportunidad)."
+    )
 
-    # --- Negativo Button ---
-    with col3:
-        is_selected = st.session_state['selected_negativo']
-        st.button(
-            label=f"Negativo {'(ON)' if is_selected else ''}",
-            key="btn_negativo",
-            on_click=_toggle_sentiment_state,
-            args=['selected_negativo'],
-            help="Activar/Desactivar el filtro de sentimiento Negativo."
-        )
+    # Botón Negativo
+    st.session_state['selected_negativo'] = st.sidebar.toggle(
+        "Negativo 🔴", 
+        value=st.session_state['selected_negativo'], 
+        key="toggle_negativo",
+        help="Mostrar reseñas con sentimiento Negativo (Foco Rojo)."
+    )
 
     # --- Recolectar las emociones seleccionadas para el filtrado ---
     selected_sentiments = []
