@@ -3,5 +3,3 @@ pandas
 numpy
 pydeck
 scikit-learn
-wordcloud
-matplotlib
