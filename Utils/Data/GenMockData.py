@@ -30,8 +30,8 @@ def generate_mock_data(num_businesses=100):
 
     data = pd.DataFrame({
         'name': [f'Detailing Pro {i}' for i in range(num_businesses)],
-        'lat': latitudes,
-        'lon': longitudes,
+        'latitude': latitudes,
+        'longitude': longitudes,
         'sentiment': sentiments,
         'rating': ratings,
         'review_count': np.random.randint(10, 500, num_businesses)
