@@ -8,6 +8,8 @@ from Utils.Widgets.EmotionMap import render_map_viz
 from Utils.Widgets.EmotionMap import show_emotion_map_dashboard
 from Utils.Widgets.Sidebar import create_sidebar_filter
 from Utils.Widgets.Leaderboard import show_leaderboard
+from Utils.Widgets.WordMap import load_reviews_data # Importar la nueva función de carga
+from Utils.Widgets.WordMap import word_map_dashboard # Importar el nuevo dashboard
 
 # --- Configuración de la Página de Streamlit ---
 st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Automotriz", page_icon="🚗")
@@ -16,24 +18,29 @@ st.set_page_config(layout="wide", page_title="Shiny Stats: Dashboard de BI Autom
 st.title("✨ Shiny Stats: Dashboard de Inteligencia de Negocios Automotriz 🚗")
 st.markdown("""
     **Transformando el Detailing en Florida con Data Science.**
-    Análisis de sentimientos en reseñas de Yelp y Google para **identificar quejas**, 
+    Análisis de sentimientos en reseñas de Yelp para **identificar quejas**, 
     optimizar la experiencia del cliente y obtener una ventaja competitiva.
 """)
 st.markdown("---") 
 # ---------------------------
 
+# Cargar los datos de negocios (para Mapa y Leaderboard)
+df_data_businesses = pd.read_csv('Datasets/businesses_con_sentimiento.csv') 
+
+# Cargar los datos de reseñas (para WordMap)
+df_data_reviews = load_reviews_data()
 
 
-# Cargar los datos simulados
-#df_data = generate_mock_data()
+# 1. Sidebar y Filtrado para el Mapa
+# La barra lateral filtra 'df_data_businesses' (negocios)
+df_filtered_businesses = create_sidebar_filter(df_data_businesses)
 
-df_data = pd.read_csv('Datasets/businesses_con_sentimiento.csv')  # Cargar datos desde un archivo CSV Datasets\businesses_con_sentimiento.csv
+# 2. Mostrar el dashboard del mapa de emociones (usa df_filtered_businesses)
+show_emotion_map_dashboard(df_filtered_businesses)
 
-df_filtered = create_sidebar_filter(df_data)
+# 3. Word Map de Tendencias (usa df_data_reviews)
+word_map_dashboard(df_data_reviews)
 
-
-# Mostrar el dashboard del mapa de emociones
-show_emotion_map_dashboard(df_filtered)
-
+# 4. Leaderboard de Ranking (usa df_filtered_businesses)
 st.markdown("---") # Separador para mejor visualización
-show_leaderboard(df_filtered)
+show_leaderboard(df_filtered_businesses)
