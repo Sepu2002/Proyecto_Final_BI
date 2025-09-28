@@ -106,4 +106,13 @@ def create_sidebar_filter(df_data):
         help="Descarga la base de datos de negocios con los filtros de la barra lateral aplicados."
     )
     
+    COLOR_MAPPING = {
+    'Positivo': [0, 128, 0, 180],    # Verde
+    'Negativo': [255, 0, 0, 180],    # Rojo
+    'Neutral': [255, 255, 0, 180],   # Amarillo
+    }
+
+    # Añadir la columna RGB para PyDeck
+    df_filtered['color'] = df_filtered['sentiment'].apply(lambda x: COLOR_MAPPING[x])
+
     return df_filtered

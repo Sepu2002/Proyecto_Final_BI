@@ -22,12 +22,15 @@ st.markdown("""
 st.markdown("---") 
 # ---------------------------
 
-# Cargar los datos simulados
-df_data = generate_mock_data()
 
-#df_data = pd.read_csv('Datasets/businesses_con_sentimiento.csv')  # Cargar datos desde un archivo CSV Datasets\businesses_con_sentimiento.csv
+
+# Cargar los datos simulados
+#df_data = generate_mock_data()
+
+df_data = pd.read_csv('Datasets/businesses_con_sentimiento.csv')  # Cargar datos desde un archivo CSV Datasets\businesses_con_sentimiento.csv
 
 df_filtered = create_sidebar_filter(df_data)
+
 
 # Mostrar el dashboard del mapa de emociones
 show_emotion_map_dashboard(df_filtered)
