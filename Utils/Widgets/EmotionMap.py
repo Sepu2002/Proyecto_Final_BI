@@ -4,54 +4,6 @@ import numpy as np
 import pydeck as pdk
 
 
-
-
-# --------------------------------------------------------------------------------------
-# FUNCIÓN DE VISUALIZACIÓN DEL MAPA
-# --------------------------------------------------------------------------------------
-def render_map_viz(df):
-    """Renderiza la visualización del mapa de Florida con puntos coloreados por emoción."""
-
-    # 1. Definir la vista inicial del mapa (centrado en Florida)
-    view_state = pdk.ViewState(
-        latitude=28.5,
-        longitude=-81.5,
-        zoom=6,
-        pitch=40,
-    )
-
-    # 2. Definir la capa de Scatterplot
-    # Usa la columna 'color' que creamos en el dataframe
-    # Usa el conteo de reseñas para el radio del punto
-    scatter_layer = pdk.Layer(
-        "ScatterplotLayer",
-        df,
-        get_position=["lon", "lat"],
-        auto_highlight=True,
-        get_fill_color="color",  # Usa la columna 'color' (RGB) para el color de relleno
-        get_line_color=[0, 0, 0],
-        get_radius="review_count / 10", # Radio basado en el volumen de reseñas
-        radius_scale=2,
-        radius_min_pixels=5,
-        radius_max_pixels=100,
-        pickable=True, # Hace los puntos interactivos
-    )
-
-    # 3. Crear el deck con el tooltip
-    r = pdk.Deck(
-        layers=[scatter_layer],
-        initial_view_state=view_state,
-        # *** CORRECCIÓN: Se eliminó el map_style que requería Mapbox token ***
-        tooltip={
-            "html": "<b>Negocio:</b> {name}<br><b>Rating:</b> {rating} estrellas<br><b>Emoción:</b> {sentiment}<br><b>Reseñas:</b> {review_count}",
-            "style": {"backgroundColor": "steelblue", "color": "white"}
-        }
-    )
-
-    st.pydeck_chart(r)
-
-
-
 def show_emotion_map_dashboard(df_data):
     # --------------------------------------------------------------------------------------
     # CUERPO PRINCIPAL DEL DASHBOARD
@@ -99,3 +51,48 @@ def show_emotion_map_dashboard(df_data):
         </ul>
     </div>
     """, unsafe_allow_html=True)
+
+
+# --------------------------------------------------------------------------------------
+# FUNCIÓN DE VISUALIZACIÓN DEL MAPA
+# --------------------------------------------------------------------------------------
+def render_map_viz(df):
+    """Renderiza la visualización del mapa de Florida con puntos coloreados por emoción."""
+
+    # 1. Definir la vista inicial del mapa (centrado en Florida)
+    view_state = pdk.ViewState(
+        latitude=28.5,
+        longitude=-81.5,
+        zoom=6,
+        pitch=40,
+    )
+
+    # 2. Definir la capa de Scatterplot
+    # Usa la columna 'color' que creamos en el dataframe
+    # Usa el conteo de reseñas para el radio del punto
+    scatter_layer = pdk.Layer(
+        "ScatterplotLayer",
+        df,
+        get_position=["lon", "lat"],
+        auto_highlight=True,
+        get_fill_color="color",  # Usa la columna 'color' (RGB) para el color de relleno
+        get_line_color=[0, 0, 0],
+        get_radius="review_count / 10", # Radio basado en el volumen de reseñas
+        radius_scale=2,
+        radius_min_pixels=5,
+        radius_max_pixels=100,
+        pickable=True, # Hace los puntos interactivos
+    )
+
+    # 3. Crear el deck con el tooltip
+    r = pdk.Deck(
+        layers=[scatter_layer],
+        initial_view_state=view_state,
+        # *** CORRECCIÓN: Se eliminó el map_style que requería Mapbox token ***
+        tooltip={
+            "html": "<b>Negocio:</b> {name}<br><b>Rating:</b> {rating} estrellas<br><b>Emoción:</b> {sentiment}<br><b>Reseñas:</b> {review_count}",
+            "style": {"backgroundColor": "steelblue", "color": "white"}
+        }
+    )
+
+    st.pydeck_chart(r)
