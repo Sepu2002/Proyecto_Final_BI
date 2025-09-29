@@ -121,9 +121,9 @@ def create_sidebar_filter(df_data):
     José Miguel Muñoz Villalvazo 
     Melisa Ortiz Morante
     Santiago Sepúlveda Landeros
+    2025 Universidad Panamericana
 """)
 
-    st.sidebar.markdown("2025 Universidad Panamericana")
     COLOR_MAPPING = {
     'Positivo': [0, 128, 0, 180],    # Verde
     'Negativo': [255, 0, 0, 180],    # Rojo
