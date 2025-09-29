@@ -50,15 +50,15 @@ Al analizar los datos con este dashboard, se puede:
 ## **⚙️ Cómo ejecutar el proyecto localmente**
 
 1. **Clonar el repositorio:**  
-   git clone \[https://github.com/tu-usuario/tu-repositorio.git\](https://github.com/tu-usuario/tu-repositorio.git)  
-   cd tu-repositorio
+   '''git clone \[https://github.com/tu-usuario/tu-repositorio.git\](https://github.com/tu-usuario/tu-repositorio.git)  
+   cd tu-repositorio'''
 
 2. **Crear un entorno virtual (recomendado):**  
-   python \-m venv venv  
-   source venv/bin/activate  \# En Windows: venv\\Scripts\\activate
+   '''python \-m venv venv  
+   source venv/bin/activate  \# En Windows: venv\\Scripts\\activate'''
 
 3. **Instalar las dependencias:**  
-   pip install \-r requirements.txt
+   '''pip install \-r requirements.txt'''
 
 4. **Ejecutar la aplicación de Streamlit:**  
-   streamlit run streamlit\_app.py  
+   '''streamlit run streamlit\_app.py'''  
