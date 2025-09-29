@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
-import io
+import re
+from collections import Counter
+from nltk.util import ngrams
 
 # Definición de Stopwords en inglés
 # Combinamos las STOPWORDS estándar con términos comunes en el contexto de detailing/reseñas
@@ -47,9 +49,27 @@ def load_reviews_data():
         st.error("Error: El archivo 'reviews_con_sentimiento.csv' no se encontró. Asegúrate de que esté en la carpeta 'Datasets'.")
         return pd.DataFrame()
 
-def show_word_map(df_reviews, selected_sentiment):
+def generate_ngrams(text, n=1, stopwords=set()):
+    """Genera n-gramas a partir de un texto y cuenta su frecuencia."""
+    # Limpiar y tokenizar el texto
+    words = re.findall(r'\b\w+\b', text.lower())
+    
+    # Filtrar stopwords
+    filtered_words = [word for word in words if word not in stopwords and not word.isdigit()]
+    
+    if n == 1:
+        # Para unigramas, el conteo es directo
+        return Counter(filtered_words)
+    else:
+        # Para n-gramas > 1
+        n_grams = ngrams(filtered_words, n)
+        # Unir las tuplas de n-gramas en cadenas
+        gram_strings = [' '.join(grams) for grams in n_grams]
+        return Counter(gram_strings)
+
+def show_word_map(df_reviews, selected_sentiment, ngram_n):
     """
-    Genera y muestra el WordCloud para el sentimiento seleccionado.
+    Genera y muestra el WordCloud para el sentimiento y n-grama seleccionados.
     """
     if df_reviews.empty:
         st.warning("No se puede generar el mapa de palabras: el DataFrame de reseñas está vacío.")
@@ -60,11 +80,10 @@ def show_word_map(df_reviews, selected_sentiment):
         df_filtered = df_reviews
         title_suffix = "Todas las Reseñas"
     else:
-        # Nota: La columna 'sentiment' se estandariza a Title case en load_reviews_data
         df_filtered = df_reviews[df_reviews['sentiment'] == selected_sentiment]
         title_suffix = f"Emoción: {selected_sentiment}"
 
-    st.subheader(f"📈 Tendencias de Palabras Clave ({title_suffix})")
+    st.subheader(f"📈 Tendencias de Frases Clave ({title_suffix})")
 
     if df_filtered.empty:
         st.info(f"No hay reseñas con sentimiento '{selected_sentiment}' para generar el mapa de palabras.")
@@ -77,17 +96,23 @@ def show_word_map(df_reviews, selected_sentiment):
         st.info("El texto filtrado está vacío o solo contiene caracteres de espacio.")
         return
 
-    # 3. Crear el objeto WordCloud
+    # 3. Generar n-gramas y sus frecuencias
+    ngram_freqs = generate_ngrams(text_combined, n=ngram_n, stopwords=ENGLISH_STOPWORDS)
+
+    if not ngram_freqs:
+        st.info(f"No se encontraron {ngram_n}-gramas para mostrar con los filtros aplicados.")
+        return
+        
+    # 4. Crear el objeto WordCloud a partir de las frecuencias
     wordcloud = WordCloud(
-        stopwords=ENGLISH_STOPWORDS, # AHORA USAMOS LAS STOPWORDS EN INGLÉS
         background_color="white",
         width=800,
         height=400,
-        colormap='viridis',  # Un mapa de color atractivo
+        colormap='viridis',
         max_words=100
-    ).generate(text_combined)
+    ).generate_from_frequencies(ngram_freqs)
 
-    # 4. Mostrar la imagen en Streamlit
+    # 5. Mostrar la imagen en Streamlit
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.imshow(wordcloud, interpolation='bilinear')
     ax.axis("off")
@@ -96,23 +121,41 @@ def show_word_map(df_reviews, selected_sentiment):
 
 def word_map_dashboard(df_reviews):
     """
-    Componente del dashboard que permite al usuario seleccionar el sentimiento
+    Componente del dashboard que permite al usuario seleccionar sentimiento y n-grama
     y llama a la función de generación del WordCloud.
     """
     st.markdown("---") 
     st.header("🔍 Análisis de Tendencias por Emoción (Word Map)")
-    st.markdown("Selecciona una categoría de emoción para visualizar las palabras más frecuentes en las reseñas correspondientes. Esto ayuda a entender las quejas y elogios específicos.")
+    st.markdown("""
+    Selecciona una categoría de emoción y el tamaño del n-grama para visualizar las frases más frecuentes.
+    - **1-grama (unigrama):** Palabras individuales.
+    - **2-gramas (bigrama):** Pares de palabras.
+    - **3-gramas (trigrama):** Tríos de palabras.
+    """)
     
-    # Opciones del selector
-    sentiment_options = ["Todas", "Positivo", "Negativo", "Neutral"]
+    # Dividir en columnas para los selectores
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # Opciones del selector de sentimiento
+        sentiment_options = ["Todas", "Positivo", "Negativo", "Neutral"]
+        selected_sentiment = st.selectbox(
+            "Filtrar por tipo de Emoción:",
+            options=sentiment_options,
+            index=0,
+            key="wordmap_sentiment_selector"
+        )
     
-    # Selector de sentimiento
-    selected_sentiment = st.selectbox(
-        "Filtrar el mapa de palabras por tipo de Emoción:",
-        options=sentiment_options,
-        index=0,
-        key="wordmap_sentiment_selector"
-    )
+    with col2:
+        # Selector de n-grama
+        ngram_n = st.slider(
+            "Seleccionar tamaño de n-grama:",
+            min_value=1,
+            max_value=3,
+            value=1,
+            key="ngram_selector",
+            help="1=palabras individuales, 2=pares de palabras, 3=tríos de palabras."
+        )
 
     # Generar y mostrar el WordCloud
-    show_word_map(df_reviews, selected_sentiment)
+    show_word_map(df_reviews, selected_sentiment, ngram_n)
