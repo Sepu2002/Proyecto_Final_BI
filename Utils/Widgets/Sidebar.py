@@ -116,13 +116,12 @@ def create_sidebar_filter(df_data):
         help="Descarga la base de datos de negocios con los filtros de la barra lateral aplicados."
     )
 
-    st.markdown("""
+    st.sidebar.markdown("""
     Iván Domínguez Lugo
     José Miguel Muñoz Villalvazo 
     Melisa Ortiz Morante
     Santiago Sepúlveda Landeros
-    2025 Universidad Panamericana
-""")
+    2025 Universidad Panamericana""")
 
     COLOR_MAPPING = {
     'Positivo': [0, 128, 0, 180],    # Verde
