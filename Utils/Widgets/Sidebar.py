@@ -118,10 +118,15 @@ def create_sidebar_filter(df_data):
 
     st.sidebar.markdown("""
     Iván Domínguez Lugo
+                        
     José Miguel Muñoz Villalvazo 
+                        
     Melisa Ortiz Morante
+                        
     Santiago Sepúlveda Landeros
-    2025 Universidad Panamericana""")
+                        
+    2025 Universidad Panamericana
+    """)
 
     COLOR_MAPPING = {
     'Positivo': [0, 128, 0, 180],    # Verde
