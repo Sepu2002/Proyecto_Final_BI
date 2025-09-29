@@ -85,7 +85,7 @@ def create_sidebar_filter(df_data):
         step=0.5
     )
 
-        # Filtro 2: Calificación de Estrellas
+    # Filtro 2: Calificación de Estrellas
     max_rating = st.sidebar.slider(
         "Calificación Máxima ⭐:",
         min_value=1.0,
