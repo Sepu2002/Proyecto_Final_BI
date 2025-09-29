@@ -81,7 +81,7 @@ def create_sidebar_filter(df_data):
         "Calificación Mínima ⭐:",
         min_value=0.0,
         max_value=5.0,
-        value=1.0,
+        value=0.0,
         step=0.5
     )
 
