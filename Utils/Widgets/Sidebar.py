@@ -85,9 +85,19 @@ def create_sidebar_filter(df_data):
         step=0.5
     )
 
+        # Filtro 2: Calificación de Estrellas
+    max_rating = st.sidebar.slider(
+        "Calificación Máxima ⭐:",
+        min_value=1.0,
+        max_value=5.0,
+        value=5.0,
+        step=0.5
+    )
+
     # --- Aplicar Filtros ---
     df_filtered = df_data[df_data['sentiment'].isin(selected_sentiments)]
     df_filtered = df_filtered[df_filtered['rating'] >= min_rating]
+    df_filtered = df_filtered[df_filtered['rating'] <= max_rating]
 
     # --- Botón de Descarga ---
     
