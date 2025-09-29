@@ -46,19 +46,3 @@ Al analizar los datos con este dashboard, se puede:
 2. **Personalizar Ofertas:** Crear paquetes de servicios dirigidos a resolver problemas específicos.  
 3. **Optimizar la Estrategia de Precios:** Correlacionar la satisfacción del cliente con los precios para encontrar el punto óptimo.  
 4. **Identificar Nuevos Mercados:** Usar el mapa de calor para encontrar áreas con alta demanda pero baja satisfacción.
-
-## **⚙️ Cómo ejecutar el proyecto localmente**
-
-1. **Clonar el repositorio:**  
-   ```git clone \[https://github.com/tu-usuario/tu-repositorio.git\](https://github.com/tu-usuario/tu-repositorio.git)  
-   cd tu-repositorio```
-
-2. **Crear un entorno virtual (recomendado):**  
-   ```python \-m venv venv  
-   source venv/bin/activate  \# En Windows: venv\\Scripts\\activate```
-
-3. **Instalar las dependencias:**  
-   ```pip install \-r requirements.txt```
-
-4. **Ejecutar la aplicación de Streamlit:**  
-   ```streamlit run streamlit\_app.py```  
