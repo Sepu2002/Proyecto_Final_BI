@@ -116,10 +116,12 @@ def create_sidebar_filter(df_data):
         help="Descarga la base de datos de negocios con los filtros de la barra lateral aplicados."
     )
 
-    st.sidebar.markdown(" Iván Domínguez Lugo")
-    st.sidebar.markdown("José Miguel Muñoz Villalvazo")
-    st.sidebar.markdown("Melisa Ortiz Morante")
-    st.sidebar.markdown("Santiago Sepúlveda Landeros")
+    st.markdown("""
+    Iván Domínguez Lugo
+    José Miguel Muñoz Villalvazo 
+    Melisa Ortiz Morante
+    Santiago Sepúlveda Landeros
+""")
 
     st.sidebar.markdown("2025 Universidad Panamericana")
     COLOR_MAPPING = {
