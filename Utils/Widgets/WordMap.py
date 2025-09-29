@@ -37,7 +37,7 @@ def load_reviews_data():
     """Carga y limpia el dataset de reseñas con sentimiento."""
     try:
         # Usamos el dataset reviews_con_sentimiento.csv como lo solicitaste
-        df = pd.read_csv('Datasets/reviews_con_sentimiento.csv')
+        df = pd.read_csv('Datasets/reviews_final_with_sentiment.csv')
         
         # Estandarizar la columna 'sentiment'
         df['sentiment'] = df['sentiment'].str.title()

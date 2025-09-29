@@ -25,7 +25,7 @@ st.markdown("---")
 # ---------------------------
 
 # Cargar los datos de negocios (para Mapa y Leaderboard)
-df_data_businesses = pd.read_csv('Datasets/businesses_con_sentimiento.csv') 
+df_data_businesses = pd.read_csv('Datasets/df_business_with_sentiment.csv') 
 
 # Cargar los datos de reseñas (para WordMap)
 df_data_reviews = load_reviews_data()
